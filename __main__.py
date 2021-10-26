@@ -7,6 +7,7 @@ import pathlib
 import asyncio
 
 from Core.Utils import *
+from Core.settings import INITIAL_EXTENSIONS
 
 config = load_json('Core/config.json')
 TOKEN = config['TOKEN']
@@ -24,6 +25,13 @@ class Orion(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(command_prefix = commands.when_mentioned_or(*config['prefix']),  intents = discord.Intents.all(), activity = discord.Game(name="Waking Up"), status=discord.Status.idle, case_insensitive=True, **kwargs)
         self.description = config['description']
+
+        # Load Initial Extensions
+        for extension in INITIAL_EXTENSIONS:
+            try:
+                self.load_extension(extension)
+            except Exception as e:
+                print(f'Failed to load extension {extension}\n{type(e).__name__}: {e}')
     
     async def start(self, *args, **kwargs):
         self.session = aiohttp.ClientSession()
