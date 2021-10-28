@@ -15,4 +15,4 @@ class BotStuff(commands.Cog):
         end = time.perf_counter()
         typing_ping = (end - start) * 1000
 
-        await msg.edit(content=f"```yaml\nTyping: {round(typing_ping, 1)} ms\nWebsocket: {round(self.bot.latency*1000)} ms```")
+        await msg.edit(content = f"```yaml\nTyping: {round(typing_ping, 1)} ms\nWebsocket: {round(self.bot.latency*1000)} ms```")
