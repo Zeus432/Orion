@@ -16,9 +16,9 @@ TOKEN = config['TOKEN']
 rootdir = pathlib.Path(__file__).parent.resolve()
 
 # Loggers help keep your console from being flooded with Errors, you can instead send them to a file which you can check later
-logger = logging.getLogger('Log')
+logger = logging.getLogger('OrionLog')
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename = f'{rootdir}/Core/Orion.log', encoding = 'utf-8', mode = 'w')
+handler = logging.FileHandler(filename = f'{rootdir}/Core/Orion.log', encoding = 'utf-8', mode = 'a')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
