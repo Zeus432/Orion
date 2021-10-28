@@ -5,8 +5,9 @@ import logging
 import aiohttp
 import pathlib
 import asyncio
+from datetime import datetime
 
-from Core.Utils import *
+from Core.Utils import load_json
 from Core.settings import INITIAL_EXTENSIONS
 
 config = load_json('Core/config.json')
@@ -25,6 +26,8 @@ class Orion(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(command_prefix = commands.when_mentioned_or(*config['prefix']),  intents = discord.Intents.all(), activity = discord.Game(name="Waking Up"), status=discord.Status.idle, case_insensitive = True, **kwargs)
         self.description = config['description']
+        self.launch_time = datetime.now()
+        self.launch_ts = self.launch_time.timestamp()
 
         # Load Initial Extensions
         for extension in INITIAL_EXTENSIONS:
