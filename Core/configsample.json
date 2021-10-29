@@ -1,5 +1,6 @@
 {
     "TOKEN": "<token here>",
     "prefix": ["<prefix list>"],
-    "description": "A Bot Description"
+    "description": "A Bot Description",
+    "errorchannel": 123456789
 }

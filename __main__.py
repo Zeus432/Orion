@@ -10,8 +10,8 @@ from datetime import datetime
 from Core.Utils import load_json
 from Core.settings import INITIAL_EXTENSIONS
 
-config = load_json('Core/config.json')
-TOKEN = config['TOKEN']
+CONFIG = load_json('Core/CONFIG.json')
+TOKEN = CONFIG['TOKEN']
 
 rootdir = pathlib.Path(__file__).parent.resolve()
 
@@ -24,10 +24,11 @@ logger.addHandler(handler)
 
 class Orion(commands.Bot):
     def __init__(self, *args, **kwargs):
-        super().__init__(command_prefix = commands.when_mentioned_or(*config['prefix']),  intents = discord.Intents.all(), activity = discord.Game(name="Waking Up"), status=discord.Status.idle, case_insensitive = True, **kwargs)
-        self.description = config['description']
+        super().__init__(command_prefix = commands.when_mentioned_or(*CONFIG['prefix']),  intents = discord.Intents.all(), activity = discord.Game(name="Waking Up"), status=discord.Status.idle, case_insensitive = True, **kwargs)
+        self.description = CONFIG['description']
         self.launch_time = datetime.now()
         self.launch_ts = self.launch_time.timestamp()
+        self.config = CONFIG
 
         # Load Initial Extensions
         for extension in INITIAL_EXTENSIONS:
