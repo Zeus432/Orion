@@ -1,16 +1,17 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
+from datetime import datetime
 import logging
 import aiohttp
 import pathlib
 import asyncio
-from datetime import datetime
 
-from Core.Utils import load_json
+
+from Core.Utils import load_json, write_json
 from Core.settings import INITIAL_EXTENSIONS
 
-CONFIG = load_json('Core/CONFIG.json')
+CONFIG = load_json('Core/config.json')
 TOKEN = CONFIG['TOKEN']
 
 rootdir = pathlib.Path(__file__).parent.resolve()
@@ -36,6 +37,26 @@ class Orion(commands.Bot):
                 self.load_extension(extension)
             except Exception as e:
                 print(f'Failed to load extension {extension}\n{type(e).__name__}: {e}')
+        
+        # Edit restart message if exists
+        restart = CONFIG["restart"]
+        if restart:
+            start = restart[0]
+            end = datetime.utcnow().timestamp()
+            restart.append(round((end - start) * 10, 2))
+            self.restart = restart
+            self.loop.create_task(self.restartcheck())
+    
+    async def restartcheck(self):
+        await self.wait_until_ready()
+        CONFIG['restart'] = []
+        self.config = CONFIG
+        write_json('Core/config.json', CONFIG)
+        try:
+            msg = self.get_channel(self.restart[1][0]).get_partial_message(self.restart[1][1])
+        except:
+            return
+        await msg.edit(content = f"Restarted **{self.user.name}** in `{self.restart[2]}` s")
     
     async def start(self, *args, **kwargs):
         self.session = aiohttp.ClientSession()

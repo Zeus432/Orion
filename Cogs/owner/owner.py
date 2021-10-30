@@ -1,16 +1,18 @@
+from datetime import date
+import datetime
 import discord
 from discord.ext import commands
 
 from contextlib import redirect_stdout
+from datetime import datetime
 import traceback
-import asyncio
 import textwrap
 import sys
 import io
 import os
 
 from .useful import cleanup_code
-from Core.Utils import Confirm
+from Core.Utils import Confirm, write_json
 
 class Owner(commands.Cog):
     """ Overall bot related management stuff, or just for abuse commands """
@@ -134,9 +136,14 @@ class Owner(commands.Cog):
         def restart_program():
             python = sys.executable
             os.execl(python, python, * sys.argv)
-        message = await ctx.send(f"{self.bot.user} is Restarting")
+        message = await ctx.send(f"**{self.bot.user.name}** is Restarting")
         try:
+            await ctx.message.add_reaction("\U000023f0")
+        except:
+            pass
+        try:
+            self.bot.config['restart'] = [datetime.utcnow().timestamp(),[message.channel.id, message.id]]
+            write_json('Core/config.json', self.bot.config)
             restart_program()
         except:
-            await ctx.message.add_reaction("\U000026a0")
-            await message.edit('Error I was unable to restart')
+            await message.add_reaction("\U000026a0")
