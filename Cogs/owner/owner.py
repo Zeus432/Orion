@@ -10,6 +10,7 @@ import io
 import os
 
 from .useful import cleanup_code
+from Core.Utils import Confirm
 
 class Owner(commands.Cog):
     """ Overall bot related management stuff, or just for abooz commands """
@@ -94,3 +95,35 @@ class Owner(commands.Cog):
             await ctx.send(f"Give me something to eval dumbass, this isn't just for you to flex your eval perms")
         else:
             print(error)
+    
+    @commands.command(name="shutdown", aliases = ['die','sd','stop'], help = "Shutdown the Bot", brief = "Shutdown")
+    async def shutdown(self, ctx: commands.Context):
+        # Define some confirm buttons functions
+        async def onconfirm(view, button, interaction: discord.Interaction):
+            if interaction.user != ctx.author:
+                return
+            await view.message.edit("https://tenor.com/view/nick-fury-mother-damn-it-gone-bye-bye-gif-16387502", view = None)
+            try:
+                await ctx.message.add_reaction("\U00002705")
+            except:
+                pass
+            view.stop()
+            await self.bot.close()
+
+        async def oncancel(view, button, interaction):
+            if interaction.user != ctx.author:
+                return
+            for item in view.children:
+                item.disabled = True
+                item.style = discord.ButtonStyle.red if item == button else discord.ButtonStyle.gray 
+            await view.message.edit("Cancelled Shutdown...",view = view)
+            view.stop()
+
+        async def ontimeout(view):
+            for item in view.children:
+                item.disabled = True
+                item.style = discord.ButtonStyle.red if item.label == "Cancel" else discord.ButtonStyle.gray 
+            await view.message.edit("Cancelled Shutdown...",view = view)
+
+        view = Confirm(onconfirm, oncancel, ontimeout, 60)
+        view.message = await ctx.reply("Are you sure you want to shutdown?", view = view)
