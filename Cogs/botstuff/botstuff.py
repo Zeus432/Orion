@@ -4,8 +4,10 @@ from discord.ext import commands
 import os
 import time
 import inspect
+from datetime import datetime
 
 from Core.Utils import get_uptime
+from .useful import ghlinkbutton
 
 class BotStuff(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -32,7 +34,7 @@ class BotStuff(commands.Cog):
         await ctx.channel.send(f'{self.bot.user} has been up for {uptime_string}.\nSince <t:{round(self.bot.launch_ts)}>')
     
     @commands.command(brief = "Get Command Source")
-    async def source(self, ctx, *, command: str = None):
+    async def source(self, ctx: commands.Context, *, command: str = None):
         """Displays my full source code or for a specific command.
         To display the source code of a subcommand you can separate it by
         periods, e.g. permissions.add for the add subcommand of the permissions command
@@ -41,15 +43,21 @@ class BotStuff(commands.Cog):
         source_url = self.bot.config['github']['source']
         branch = self.bot.config['github']['branch']
 
+        view = discord.ui.View()
+        embed = discord.Embed(colour = self.bot.colour)
+        embed.set_footer(text = f"Requested by {ctx.author}", icon_url = ctx.author.display_avatar or ctx.author.default_avatar)
+
         if command is None:
-            return await ctx.send(source_url)
+            embed.title = "Here's the entire repo"
+            return await ctx.send(embed = embed, view = ghlinkbutton(view, source_url))
 
         if command == 'help':
             src = type(self.bot.help_command)
             module = src.__module__
             filename = inspect.getsourcefile(src)
         else:
-            obj = self.bot.get_command(command.replace('.', ' '))
+            command = command.replace('.', ' ')
+            obj = self.bot.get_command(command)
             if obj is None:
                 return await ctx.send('Could not find command.')
 
@@ -62,5 +70,7 @@ class BotStuff(commands.Cog):
         lines, firstlineno = inspect.getsourcelines(src)
         location = os.path.relpath(filename).replace('\\', '/')
 
-        final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
-        await ctx.send(final_url)
+        embed.title = f"Here's the source for `{command}`"
+        final_url = f'{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}'
+
+        await ctx.send(embed = embed, view = ghlinkbutton(view, final_url))

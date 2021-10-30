@@ -30,6 +30,7 @@ class Orion(commands.Bot):
         self.launch_time = datetime.now()
         self.launch_ts = self.launch_time.timestamp()
         self.config = CONFIG
+        self.colour = discord.Colour(0x2F3136)
 
         # Load Initial Extensions
         for extension in INITIAL_EXTENSIONS:
