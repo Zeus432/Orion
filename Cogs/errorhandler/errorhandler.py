@@ -8,14 +8,14 @@ from .useful import send_error
 class ErrorHandler(commands.Cog, name = "ErrorHandler"):
     """ Module for Global Error Handling and Logging"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         logger = logging.getLogger('OrionLog')
         logger.info("Error Handler Logged in")
         self.logger = logger
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(self, ctx: commands.Context, error):
         """The event triggered when an error is raised while invoking a command."""
         if hasattr(ctx.command, 'on_error'):
             return

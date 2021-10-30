@@ -6,7 +6,7 @@ import asyncio
 import datetime
 import json
 
-def load_json(file):
+def load_json(file) -> dict:
     with open(file, encoding = 'utf-8') as newfile:
         return json.load(newfile)
 
@@ -15,7 +15,7 @@ def write_json(file, contents):
     with open(file, 'w') as newfile:
         json.dump(contents, newfile, ensure_ascii = True, indent = 4)
 
-def get_uptime(bot):
+def get_uptime(bot: commands.Bot) -> str:
     delta_uptime = relativedelta(datetime.datetime.now(), bot.launch_time)
     days, hours, minutes, seconds = delta_uptime.days, delta_uptime.hours, delta_uptime.minutes, delta_uptime.seconds
 
@@ -33,7 +33,7 @@ def get_uptime(bot):
     return uptime_string
 
 class CheckAsync(commands.Converter):
-    async def isAsync(self, ctx, argument):
+    async def isAsync(self, ctx: commands.Context, argument):
         return asyncio.iscoroutinefunction(self)
 
 class Confirm(discord.ui.View):

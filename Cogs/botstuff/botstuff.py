@@ -6,12 +6,12 @@ import time
 from Core.Utils import get_uptime
 
 class BotStuff(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
     
     @commands.command(name = "ping", help = "View the ping of the bot", brief = "Take a wild guess")
     @commands.cooldown(2, 5, commands.BucketType.user)
-    async def ping(self, ctx):
+    async def ping(self, ctx: commands.Context):
         async with ctx.typing():
             start = time.perf_counter()
             msg = await ctx.send(f"Pinging...")
