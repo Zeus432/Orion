@@ -55,7 +55,7 @@ class Orion(commands.Bot):
         print(f'Message Cache Size: {len(self.cached_messages)}\n')
         await asyncio.sleep(10)
         await self.change_presence(status = discord.Status.idle, activity = discord.Activity(type=discord.ActivityType.watching, name = f"for @{self.user.name} help"))
-        logger.info("Orion is Online!")
+        logger.info(f"{self.user} is Online!")
     
     def run(self):
         super().run(TOKEN, reconnect = True)
