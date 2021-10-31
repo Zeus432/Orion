@@ -8,7 +8,7 @@ Installation of code is supported for macOS only currently
 
 - After navigating to the directory of your choice run       
     ```  
-    python3 -m pip install git+https://github.com/Zeus432/Orion     
+    git clone https://github.com/Zeus432/Orion     
     ```
 
 - Then make sure to install all the required python packages by running      
